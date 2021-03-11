@@ -1,24 +1,18 @@
-from gpsoauth import perform_master_login, perform_oauth
-from uuid import getnode as getmac
 from dotenv import load_dotenv
 from token_dispenser import TokenDispenser
 import os
 import requests
 import grpc
-
 from v1_pb2 import GetHomeGraphRequest
 from v1_pb2_grpc import StructuresServiceStub
-
-from google import auth as google_auth
-from google.auth.transport import requests as google_auth_transport_requests
-from google.auth.transport import grpc as google_auth_transport_grpc
 
 load_dotenv()
 
 # Generate GRPC
 # python -m grpc_tools.protoc --proto_path=./grpc_src --python_out=./python_out --grpc_python_out=./grpc_python_out v1.proto
 
-def main():
+
+def main() -> None:
     # TODO: Automatically get IP Address
     ip = '192.168.0.11'
     username = os.environ.get('GOOGLE_USERNAME')
@@ -45,7 +39,7 @@ def main():
     res = requests.get(
         url='https://{ip}:8443/setup/assistant/alarms'.format(ip=ip),
         verify=False,
-        headers={'cast-local-authorization-token': local_auth_token },
+        headers={'cast-local-authorization-token': local_auth_token},
     )
 
     if (res.status_code != 200):
@@ -54,5 +48,6 @@ def main():
     timers = res.json()['timer']
 
     print(timers)
+
 
 main()
