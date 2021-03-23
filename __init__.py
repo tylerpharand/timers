@@ -2,7 +2,7 @@
 # python -m grpc_tools.protoc --proto_path=./grpc_src --python_out=./python_out --grpc_python_out=./grpc_python_out v1.proto
 
 from dotenv import load_dotenv
-from flask import Flask
+from flask import Flask, jsonify
 import json
 import os
 from assistant_service import AssistantService
@@ -23,10 +23,14 @@ assistant_service = AssistantService(
 )
 
 
-@app.route('/timers')
+@app.route('/timers', methods=['GET'])
 def timers() -> str:
     timers = assistant_service.get_timers()
-    return json.dumps(timers, separators=(',', ':'))
+    response = jsonify(timers)
+
+    # Enable Access-Control-Allow-Origin
+    response.headers.add("Access-Control-Allow-Origin", "*")
+    return response
 
 
 app.run()
